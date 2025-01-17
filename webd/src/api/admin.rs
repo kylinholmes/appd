@@ -2,6 +2,7 @@ use axum::{
     http::{HeaderMap, StatusCode},
     Json, Router,
 };
+use log::info;
 use once_cell::sync::{Lazy, OnceCell};
 use utoipa::{
     openapi::security::{ApiKey, ApiKeyValue, SecurityScheme},
@@ -26,7 +27,12 @@ pub fn admin_api() -> Router {
         .merge(api_router())
         .split_for_parts();
 
-    router.merge(Scalar::with_url("/scalar", api))
+    if cfg!(debug_assertions) {
+        info!("[debug mode] webd enable openapi with scalar");
+        router.merge(Scalar::with_url("/", api))
+    } else {
+        router
+    }
 }
 
 #[derive(OpenApi)]

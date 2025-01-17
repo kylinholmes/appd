@@ -18,7 +18,6 @@ pub static CONFIG: Lazy<Config> = Lazy::new(|| {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
     /// The address to bind.
-    pub addr: String,
     pub admin_addr: Option<String>,
     pub log: LogConfig,
     pub app: App,
@@ -26,6 +25,7 @@ pub struct Config {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct App {
+    pub addr: String,
     pub config: PathBuf
 }
 

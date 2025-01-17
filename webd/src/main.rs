@@ -1,5 +1,6 @@
 use std::{path::PathBuf, process::exit};
 
+use utoipa::openapi::info;
 use webd::{self, api, config::CONFIG, utils::{self, VERSION}};
 use clap::Parser;
 use log::info;
@@ -8,14 +9,13 @@ use shadow_rs::shadow;
 use tracing_appender::non_blocking::WorkerGuard;
 use tracing_subscriber::util::SubscriberInitExt;
 
-
 #[derive(Debug, Parser)]
 #[command(version, about = "miniapp management", author = "kylin")]
 struct Args {
     #[clap(short, long, default_value = "0.0.0.0:8000")]
     pub addr: String,
 
-    #[clap(short, long, default_value = "config/webd.toml")]
+    #[clap(short, long, default_value = "webd/config/webd.toml")]
     pub config: PathBuf,
 
     #[command(subcommand)]
@@ -34,7 +34,7 @@ fn main() -> anyhow::Result<()> {
         utils::appd_spawn(utils::run("admin", addr.clone(), api::admin_api()));
     }
 
-    api::core_server(&CONFIG.addr)?;
+    api::core_server(&CONFIG.app.addr)?;
 
     Ok(())
 }
@@ -63,12 +63,15 @@ fn boot() -> anyhow::Result<WorkerGuard> {
     tracing_subscriber::fmt()
         .with_max_level(lo.level)
         .with_ansi(false)
-        .with_writer(non_blocking)
+        .with_file(true)
         .with_line_number(true)
+        .with_target(false)
+        .with_writer(non_blocking)
         .finish()
         .init();
 
-    info!("{}", build::VERSION);
+    info!("build-at:{}", build::BUILD_TIME_2822);
+    info!("commit-hash:{}", build::COMMIT_HASH);
     info!("{:?}", cfg);
 
     Ok(guard)

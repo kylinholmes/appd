@@ -31,7 +31,7 @@ pub fn get_api(cfg: PathBuf) -> Router {
 
 
     if cfg!(debug_assertions) {
-        info!("debug mode, enable openapi with scalar");
+        info!("[debug mode] miniapp enable openapi with scalar");
         router.merge(Scalar::with_url("/", api))
     } else {
         router
