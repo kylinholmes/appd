@@ -1,0 +1,10 @@
+addr = "0.0.0.0:8000"
+admin_addr = "127.0.0.1:8003"
+
+[log]
+path = "webd.log"
+# Debug, Info, Warn, Error
+level = "Info"
+
+[app]
+config = "../appd-core/config/appd.toml"
